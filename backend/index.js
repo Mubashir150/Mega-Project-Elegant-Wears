@@ -8,7 +8,22 @@ dotenv.config()
 import authRoutes  from "./routes/authRoutes.js"
 import cookieParser from "cookie-parser";
 const app=express();
-app.use(cors({origin:"https://mega-project-elegant-wears.vercel.app", credentials:true}))
+const allowedOrigins = [
+    "http://localhost:5173", // for local dev
+    "https://mega-project-elegant-wears.vercel.app", // main frontend
+    "https://mega-project-elegant-wears-k0qinc7oq-mubashir-ijazs-projects.vercel.app" // preview
+  ];
+  
+  app.use(cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true
+  }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 app.use("/images", express.static("public/images"));
